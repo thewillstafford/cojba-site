@@ -1,56 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>COJBA Players</title>
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
       background: #111;
-      color: white;
+      color: #fff;
       text-align: center;
+    }
+
+    h1 {
+      margin: 24px 0;
     }
 
     .players-container {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
-      gap: 20px;
       padding: 20px;
     }
 
     .player-card {
       background: #1e1e1e;
-      padding: 15px;
-      border-radius: 10px;
-      width: 150px;
+      padding: 18px;
+      border-radius: 16px;
+      width: 180px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
     }
 
     .player-card img {
-      width: 100px;
-      height: 100px;
+      width: 110px;
+      height: 110px;
       object-fit: cover;
       border-radius: 50%;
+      border: 3px solid #444;
+      display: block;
+      margin: 0 auto 12px;
     }
 
-    h1 {
-      margin-top: 20px;
+    .player-card h3 {
+      margin: 8px 0 4px;
+    }
+
+    .player-card p {
+      margin: 0;
+      color: #ccc;
     }
   </style>
 </head>
-
 <body>
 
-<h1>COJBA Players</h1>
+  <h1>COJBA Players</h1>
 
-<div class="players-container">
-
-  <div class="player-card">
-    <img src="images/players/will-stafford.jpeg" alt="Will Stafford">
-    <h3>Will Stafford</h3>
-    <p>#1 - Guard</p>
+  <div class="players-container">
+    <div class="player-card">
+      <img src="images/players/will-stafford.jpeg" alt="Will Stafford" onerror="this.onerror=null; this.src='will-stafford.jpeg';">
+      <h3>Will Stafford</h3>
+      <p>#1 - Guard</p>
+    </div>
   </div>
-
-</div>
 
 </body>
 </html>
