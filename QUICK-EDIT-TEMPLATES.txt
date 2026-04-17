@@ -1,0 +1,44 @@
+COJBA QUICK EDIT TEMPLATES
+==========================
+
+Use these inside assets/data.js.
+
+PLAYER TEMPLATE
+---------------
+Paste this inside the players array.
+
+{
+  id: 'new-player-id',
+  name: 'New Player Name',
+  nickname: 'Nickname',
+  number: 99,
+  position: 'SG',
+  team: 'High Council',
+  hometown: 'Your Hometown Label',
+  height: "6'2\"",
+  archetype: 'Player Archetype',
+  favoriteMove: 'Favorite move here',
+  bio: 'Short player bio here.',
+  strengths: ['Strength 1', 'Strength 2', 'Strength 3'],
+  stats: { games: 1, pts: 10.0, reb: 5.0, ast: 2.0, stl: 1.0, blk: 0.0, fg: 50.0, three: 33.3 }
+}
+
+VIDEO TEMPLATE
+--------------
+Paste this inside the videos array.
+
+{
+  title: 'New Video Title',
+  type: 'Highlights',
+  provider: 'youtube',
+  embedId: 'YOUR_VIDEO_ID_HERE',
+  date: '2026-04-14',
+  description: 'Short description here.'
+}
+
+REMINDERS
+---------
+- Every player id must be unique.
+- Every video block except the last one in the list needs a comma after it.
+- The last video block in the list should not have an extra comma after it.
+- Save assets/data.js and refresh the browser after changes.

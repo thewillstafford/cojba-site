@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Council of Jah Basketball Association</title>
+    <meta
+      name="description"
+      content="The official unofficial website of The Council of Jah Basketball Association with player profiles, stats, and video archives."
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="home">
+    <header class="topbar">
+      <div class="site-shell topbar__inner">
+        <a class="brand" href="index.html" aria-label="Go to homepage">
+          <span class="brand__mark" data-league-short>COJBA</span>
+          <span data-league-name>The Council of Jah Basketball Association</span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a class="active" href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="players.html">Meet the Players</a>
+          <a href="stats.html">Stats</a>
+          <a href="game-logs.html">Game Logs</a>
+          <a href="videos.html">Videos</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="site-shell hero__grid">
+          <div class="hero__main">
+            <span class="eyebrow">Official records from an extremely unofficial empire</span>
+            <h1 id="hero-title">The Council of Jah Basketball Association</h1>
+            <p id="hero-blurb">
+              The official unofficial media home for the most overanalyzed fake basketball league alive.
+            </p>
+            <div class="hero__actions">
+              <a class="button" href="players.html">Meet the Players</a>
+              <a class="ghost-button" href="stats.html">Open the Stats Vault</a>
+            </div>
+          </div>
+          <aside class="hero__side">
+            <div>
+              <span class="eyebrow">Season snapshot</span>
+              <h2 style="margin: 0 0 12px">Current council leaders</h2>
+              <p>Fast check on the names currently moving the mythology forward.</p>
+            </div>
+            <div class="stat-grid" id="quick-stats"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="site-shell">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">The whole operation</span>
+              <h2>Everything the league needs in one place</h2>
+            </div>
+            <p class="section-subtext">
+              This build keeps the vibe serious enough to feel real and dramatic enough to feel hilarious.
+            </p>
+          </div>
+          <div class="card-grid">
+            <article class="list-card">
+              <span class="eyebrow">01</span>
+              <h3>About the league</h3>
+              <p>Explain what the council is, how the games work, and why every possession becomes a legal document in the group chat.</p>
+              <a class="ghost-button" href="about.html">Open About</a>
+            </article>
+            <article class="list-card">
+              <span class="eyebrow">02</span>
+              <h3>Meet the players</h3>
+              <p>Every player gets a profile page, a role in the fake narrative, and a stat line that can be held against them forever.</p>
+              <a class="ghost-button" href="players.html">Open Players</a>
+            </article>
+            <article class="list-card">
+              <span class="eyebrow">03</span>
+              <h3>Stats, logs, and tape</h3>
+              <p>Track scoring leaders, log every game, and keep highlights or full games ready for immediate evidence review.</p>
+              <div class="hero__actions" style="margin-top: 18px">
+                <a class="ghost-button" href="stats.html">Stats</a>
+                <a class="ghost-button" href="game-logs.html">Game Logs</a>
+                <a class="ghost-button" href="videos.html">Videos</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="site-shell">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Featured names</span>
+              <h2>The faces of the current season</h2>
+            </div>
+            <a class="ghost-button" href="players.html">View full roster</a>
+          </div>
+          <div class="card-grid" id="player-preview"></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="site-shell">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Tape room</span>
+              <h2>Highlights and full game uploads</h2>
+            </div>
+            <a class="ghost-button" href="videos.html">Open video page</a>
+          </div>
+          <div class="card-grid" id="video-preview"></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="site-shell card-grid two">
+          <section class="surface">
+            <span class="eyebrow">Best part of this build</span>
+            <h2>Most future edits happen in one file</h2>
+            <ul class="bullets">
+              <li>Edit league info, player bios, base stats, and videos in <code>assets/data.js</code>.</li>
+              <li>Or use the Game Logs page to save game-by-game stats and recalculate everything automatically.</li>
+              <li>Paste a new YouTube or Vimeo ID and the video page changes instantly.</li>
+              <li>Only use <code>assets/styles.css</code> if you want to change colors, spacing, or layout.</li>
+            </ul>
+          </section>
+          <section class="surface">
+            <span class="eyebrow">Season notes</span>
+            <h2>How this version is set up</h2>
+            <ul class="bullets" id="season-notes"></ul>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="site-shell footer__panel">
+        <div>
+          <strong data-league-name>The Council of Jah Basketball Association</strong>
+          <p>The official unofficial archive for buckets, box scores, and absurd levels of confidence.</p>
+        </div>
+        <div>
+          <p>&copy; <span data-current-year></span> <span data-league-short>COJBA</span></p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/data.js"></script>
+    <script src="assets/app.js"></script>
+  </body>
+</html>

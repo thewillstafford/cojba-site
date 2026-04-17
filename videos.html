@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Videos | The Council of Jah Basketball Association</title>
+    <meta name="description" content="Highlights and full game videos for The Council of Jah Basketball Association with YouTube and Vimeo embed support." />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="videos">
+    <header class="topbar">
+      <div class="site-shell topbar__inner">
+        <a class="brand" href="index.html" aria-label="Go to homepage">
+          <span class="brand__mark" data-league-short>COJBA</span>
+          <span data-league-name>The Council of Jah Basketball Association</span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="players.html">Meet the Players</a>
+          <a href="stats.html">Stats</a>
+          <a href="game-logs.html">Game Logs</a>
+          <a class="active" href="videos.html">Videos</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero site-shell">
+        <div class="page-hero__panel">
+          <span class="eyebrow">Tape room</span>
+          <h1>Highlights, full games, and evidence</h1>
+          <p>
+            Use this page for weekly highlight reels, full-game uploads, rivalry recaps, or anything that needs to live forever on tape.
+          </p>
+        </div>
+        <aside class="page-hero__panel">
+          <span class="eyebrow">Filters</span>
+          <div class="filter-row" style="margin-bottom: 12px">
+            <button class="filter-button active" type="button" data-video-filter="ALL">All</button>
+            <button class="filter-button" type="button" data-video-filter="Highlights">Highlights</button>
+            <button class="filter-button" type="button" data-video-filter="Full Game">Full Games</button>
+          </div>
+          <span class="inline-meta" id="video-count">4 videos</span>
+        </aside>
+      </section>
+
+      <section class="section">
+        <div class="site-shell video-layout">
+          <div class="surface">
+            <div id="featured-video"></div>
+            <div id="featured-video-meta" style="margin-top: 18px"></div>
+          </div>
+          <aside class="video-sidebar" id="video-list"></aside>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="site-shell card-grid two">
+          <article class="surface">
+            <span class="eyebrow">How to add videos</span>
+            <h2>Paste a YouTube or Vimeo video ID</h2>
+            <ul class="bullets">
+              <li>Open <code>assets/data.js</code> and find the <code>videos</code> array.</li>
+              <li>Set <code>provider</code> to <code>youtube</code> or <code>vimeo</code>.</li>
+              <li>Paste the video ID into <code>embedId</code>.</li>
+              <li>Add a title, type, date, and short description.</li>
+            </ul>
+          </article>
+          <article class="surface">
+            <span class="eyebrow">Best uses for this page</span>
+            <h2>Good tape ideas</h2>
+            <ul class="bullets">
+              <li>Top plays of the week or month.</li>
+              <li>Opening-night or rivalry-night full game uploads.</li>
+              <li>Player-specific highlight reels and propaganda edits.</li>
+              <li>Slow-motion evidence for game-winners, blocks, and bad calls.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="site-shell footer__panel">
+        <div>
+          <strong data-league-name>The Council of Jah Basketball Association</strong>
+          <p>Highlights, full games, replay history, and evidence review.</p>
+        </div>
+        <div>
+          <p>&copy; <span data-current-year></span> <span data-league-short>COJBA</span></p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/data.js"></script>
+    <script src="assets/app.js"></script>
+  </body>
+</html>

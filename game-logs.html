@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Logs | The Council of Jah Basketball Association</title>
+    <meta
+      name="description"
+      content="Add game-by-game stat lines for The Council of Jah Basketball Association and recalculate the rest of the site automatically."
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="game-logs">
+    <header class="topbar">
+      <div class="site-shell topbar__inner">
+        <a class="brand" href="index.html" aria-label="Go to homepage">
+          <span class="brand__mark" data-league-short>COJBA</span>
+          <span data-league-name>The Council of Jah Basketball Association</span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="players.html">Meet the Players</a>
+          <a href="stats.html">Stats</a>
+          <a class="active" href="game-logs.html">Game Logs</a>
+          <a href="videos.html">Videos</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero site-shell">
+        <div class="page-hero__panel">
+          <span class="eyebrow">Game Logs</span>
+          <h1>Enter the games once. Let the whole site update itself.</h1>
+          <p>
+            This page is now the easiest way to run the league. Save every game here and the player profiles,
+            leaderboards, season totals, and averages all rebuild automatically.
+          </p>
+          <p class="hero-note" id="game-log-source-note" data-stats-source-note>
+            No saved game logs yet. Current season stats are coming from assets/data.js.
+          </p>
+        </div>
+        <aside class="page-hero__panel stack">
+          <div>
+            <span class="eyebrow">Storage note</span>
+            <p id="game-log-storage-note" data-storage-note>
+              Game logs save in this browser automatically. Export a backup after big edits.
+            </p>
+          </div>
+          <div class="stat-grid" id="game-logs-overview"></div>
+        </aside>
+      </section>
+
+      <section class="section">
+        <div class="site-shell log-editor-grid">
+          <article class="surface">
+            <div class="section-head small">
+              <div>
+                <span class="eyebrow">Game editor</span>
+                <h2>Add or edit one game at a time</h2>
+              </div>
+            </div>
+
+            <form id="game-log-form" class="stack">
+              <input id="log-id" type="hidden" />
+
+              <div class="log-field-grid">
+                <div class="field-stack">
+                  <label for="log-date">Date</label>
+                  <input id="log-date" class="input" type="date" required />
+                </div>
+                <div class="field-stack">
+                  <label for="log-title">Game title</label>
+                  <input id="log-title" class="input" type="text" placeholder="Week 3 Night Run" required />
+                </div>
+                <div class="field-stack">
+                  <label for="log-format">Format</label>
+                  <input id="log-format" class="input" type="text" placeholder="3v3, 4v4, 5v5" />
+                </div>
+                <div class="field-stack">
+                  <label for="log-location">Location</label>
+                  <input id="log-location" class="input" type="text" placeholder="Main court" />
+                </div>
+                <div class="field-stack">
+                  <label for="log-team-a">Team / side A</label>
+                  <input id="log-team-a" class="input" type="text" placeholder="High Table" />
+                </div>
+                <div class="field-stack">
+                  <label for="log-team-b">Team / side B</label>
+                  <input id="log-team-b" class="input" type="text" placeholder="Blacktop Saints" />
+                </div>
+              </div>
+
+              <div class="log-score-grid">
+                <div class="field-stack">
+                  <label for="log-score-a">Score A</label>
+                  <input id="log-score-a" class="input" type="number" min="0" step="1" placeholder="24" />
+                </div>
+                <div class="field-stack">
+                  <label for="log-score-b">Score B</label>
+                  <input id="log-score-b" class="input" type="number" min="0" step="1" placeholder="21" />
+                </div>
+              </div>
+
+              <div class="field-stack">
+                <label for="log-notes">Notes</label>
+                <textarea
+                  id="log-notes"
+                  class="input"
+                  placeholder="Big moments, game-winner, bad call, who talked the most, whatever matters for the record..."
+                ></textarea>
+              </div>
+
+              <div class="section-head small" style="margin-bottom: 0">
+                <div>
+                  <span class="eyebrow">Player lines</span>
+                  <h2 style="font-size: 1.35rem">Record the box score</h2>
+                </div>
+                <button id="clear-player-lines" class="ghost-button" type="button">Clear all lines</button>
+              </div>
+
+              <p class="form-help">
+                Check “Played” for anyone who appeared, even if they finished with zeros. Shooting percentages are calculated from FGM/FGA and 3PM/3PA.
+              </p>
+
+              <div class="table-wrap log-player-table-wrap">
+                <table class="stats-table log-player-table">
+                  <thead>
+                    <tr>
+                      <th>Played</th>
+                      <th>Player</th>
+                      <th>PTS</th>
+                      <th>REB</th>
+                      <th>AST</th>
+                      <th>STL</th>
+                      <th>BLK</th>
+                      <th>FGM</th>
+                      <th>FGA</th>
+                      <th>3PM</th>
+                      <th>3PA</th>
+                    </tr>
+                  </thead>
+                  <tbody id="game-log-player-rows"></tbody>
+                </table>
+              </div>
+
+              <div class="form-actions">
+                <button id="save-log-button" class="button" type="submit">Save game log</button>
+                <button id="reset-log-form" class="ghost-button" type="button">New blank game</button>
+              </div>
+
+              <p id="game-log-form-status" class="form-status info">
+                Enter a game, fill in the player lines, and save it to recalculate the site.
+              </p>
+            </form>
+          </article>
+
+          <aside class="surface stack">
+            <div>
+              <span class="eyebrow">Backup tools</span>
+              <h2>Protect the receipts</h2>
+              <p class="storage-note" data-storage-note>
+                Game logs save in this browser automatically. Export a backup after big edits.
+              </p>
+            </div>
+
+            <div class="form-actions">
+              <button id="export-game-logs" class="ghost-button" type="button">Export logs</button>
+              <label class="file-button" for="import-game-logs">
+                Import logs
+                <input id="import-game-logs" type="file" accept="application/json" />
+              </label>
+              <button id="reset-all-game-logs" class="ghost-button danger-button" type="button">Reset saved logs</button>
+            </div>
+
+            <div class="code-note">
+              The current saved game logs live in this browser. If you later publish the site, everybody will only see the same live numbers if you move to a shared database or backend.
+            </div>
+
+            <div class="info-card">
+              <h3>How this works</h3>
+              <ul class="bullets">
+                <li>Add one game here.</li>
+                <li>The site recalculates player totals and per-game averages.</li>
+                <li>The stats page, player modals, and homepage leaders update automatically.</li>
+                <li>Export the logs whenever you want a backup or want to move them to another computer.</li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="site-shell">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Archive</span>
+              <h2>Saved game logs</h2>
+            </div>
+            <p class="section-subtext" id="game-log-count">0 game logs</p>
+          </div>
+          <div class="card-grid two" id="game-log-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="site-shell footer__panel">
+        <div>
+          <strong data-league-name>The Council of Jah Basketball Association</strong>
+          <p>Game-by-game receipts, exportable backups, and stat recalculation.</p>
+        </div>
+        <div>
+          <p>&copy; <span data-current-year></span> <span data-league-short>COJBA</span></p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/data.js"></script>
+    <script src="assets/app.js"></script>
+  </body>
+</html>

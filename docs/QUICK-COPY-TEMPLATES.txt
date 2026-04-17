@@ -1,0 +1,19 @@
+PLAYER IMAGE FIELD
+image: 'assets/images/player-name.jpg',
+
+OPTIONAL GAME LOG JSON TEMPLATE
+{
+  "id": "game-1",
+  "date": "2026-04-17",
+  "title": "Week 1 Night Run",
+  "format": "5v5",
+  "location": "Main Court",
+  "teamA": "High Table",
+  "teamB": "Blacktop Saints",
+  "scoreA": 24,
+  "scoreB": 21,
+  "notes": "Big game. Still being argued about.",
+  "playerStats": [
+    { "playerId": "chris-gay", "played": true, "pts": 8, "reb": 4, "ast": 2, "stl": 1, "blk": 0, "fgm": 3, "fga": 6, "tpm": 1, "tpa": 2 }
+  ]
+}

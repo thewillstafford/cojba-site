@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stats | The Council of Jah Basketball Association</title>
+    <meta name="description" content="League stats page with leaderboards and a sortable table for The Council of Jah Basketball Association." />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="stats">
+    <header class="topbar">
+      <div class="site-shell topbar__inner">
+        <a class="brand" href="index.html" aria-label="Go to homepage">
+          <span class="brand__mark" data-league-short>COJBA</span>
+          <span data-league-name>The Council of Jah Basketball Association</span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="players.html">Meet the Players</a>
+          <a class="active" href="stats.html">Stats</a>
+          <a href="game-logs.html">Game Logs</a>
+          <a href="videos.html">Videos</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero site-shell">
+        <div class="page-hero__panel">
+          <span class="eyebrow">Stats page</span>
+          <h1>Let the numbers handle the slander</h1>
+          <p>
+            This page now auto-builds from saved game logs when they exist. If you have not entered any game logs yet, it falls back to the base season stats in <code>assets/data.js</code>.
+          </p>
+        </div>
+        <aside class="page-hero__panel">
+          <span class="eyebrow">Headline leaders</span>
+          <div class="info-cluster" id="stats-summary"></div>
+          <p class="code-note" style="margin-top: 14px" data-stats-source-note>No saved game logs yet. Current season stats are coming from assets/data.js.</p>
+        </aside>
+      </section>
+
+      <section class="section">
+        <div class="site-shell">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Leaderboards</span>
+              <h2>Who is moving the season?</h2>
+            </div>
+            <p class="section-subtext">Top-five bars make it easy to see who owns scoring, rebounding, playmaking, and theft.</p>
+          </div>
+          <div class="leaderboards-grid" id="leaderboards"></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="site-shell">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Full stat table</span>
+              <h2>Sortable season numbers</h2>
+            </div>
+            <p class="section-subtext">Click any stat header to sort the table and restart the argument.</p>
+          </div>
+          <div class="table-wrap">
+            <table class="stats-table" id="stats-table">
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th>Pos</th>
+                  <th><button class="sort-button" type="button" data-sort="games">G</button></th>
+                  <th><button class="sort-button active" type="button" data-sort="pts">PPG</button></th>
+                  <th><button class="sort-button" type="button" data-sort="reb">RPG</button></th>
+                  <th><button class="sort-button" type="button" data-sort="ast">APG</button></th>
+                  <th><button class="sort-button" type="button" data-sort="stl">SPG</button></th>
+                  <th><button class="sort-button" type="button" data-sort="blk">BPG</button></th>
+                  <th><button class="sort-button" type="button" data-sort="fg">FG%</button></th>
+                  <th><button class="sort-button" type="button" data-sort="three">3PT%</button></th>
+                </tr>
+              </thead>
+              <tbody id="stats-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="site-shell card-grid two">
+          <article class="surface">
+            <span class="eyebrow">Easy add-ons</span>
+            <h2>Ways to expand the stat empire</h2>
+            <ul class="bullets">
+              <li>Add standings, win-loss records, and point differential.</li>
+              <li>Track total season stats in addition to per-game averages.</li>
+              <li>Use the new Game Logs page so the site recalculates itself from each game.</li>
+              <li>Build all-time leaderboards after the first full season ends.</li>
+            </ul>
+          </article>
+          <article class="surface">
+            <span class="eyebrow">Editing note</span>
+            <h2>Where these numbers live</h2>
+            <p class="code-note">
+              Use the Game Logs page for live season updates. <code>assets/data.js</code> still works as your base stat source if you have not started logging games yet.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="site-shell footer__panel">
+        <div>
+          <strong data-league-name>The Council of Jah Basketball Association</strong>
+          <p>Sortable stat table, leaderboards, and receipts.</p>
+        </div>
+        <div>
+          <p>&copy; <span data-current-year></span> <span data-league-short>COJBA</span></p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/data.js"></script>
+    <script src="assets/app.js"></script>
+  </body>
+</html>
