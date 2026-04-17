@@ -1,105 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Meet the Players | The Council of Jah Basketball Association</title>
-    <meta name="description" content="Player profiles, bios, and season stats for The Council of Jah Basketball Association roster." />
-    <link rel="stylesheet" href="assets/styles.css" />
-  </head>
-  <body data-page="players">
-    <header class="topbar">
-      <div class="site-shell topbar__inner">
-        <a class="brand" href="index.html" aria-label="Go to homepage">
-          <span class="brand__mark" data-league-short>COJBA</span>
-          <span data-league-name>The Council of Jah Basketball Association</span>
-        </a>
-        <nav class="nav" aria-label="Primary">
-          <a href="index.html">Home</a>
-          <a href="about.html">About</a>
-          <a class="active" href="players.html">Meet the Players</a>
-          <a href="stats.html">Stats</a>
-          <a href="game-logs.html">Game Logs</a>
-          <a href="videos.html">Videos</a>
-        </nav>
-      </div>
-    </header>
+<html>
+<head>
+  <title>COJBA Players</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      text-align: center;
+    }
 
-    <main>
-      <section class="page-hero site-shell">
-        <div class="page-hero__panel">
-          <span class="eyebrow">Meet the players</span>
-          <h1>The council runs on personalities</h1>
-          <p>
-            Every player gets a scouting report, a role in the chaos, and a public stat line. Click any card to open the full profile.
-          </p>
-        </div>
-        <aside class="page-hero__panel">
-          <span class="eyebrow">Roster tools</span>
-          <div class="search-row" style="margin-bottom: 14px">
-            <input
-              id="player-search"
-              class="input"
-              type="search"
-              placeholder="Search by name, nickname, team, or position"
-              aria-label="Search players"
-            />
-          </div>
-          <div class="filter-row" style="margin-bottom: 10px">
-            <button class="filter-button active" type="button" data-filter="ALL">All</button>
-            <button class="filter-button" type="button" data-filter="GUARDS">Guards</button>
-            <button class="filter-button" type="button" data-filter="WINGS">Wings</button>
-            <button class="filter-button" type="button" data-filter="BIGS">Bigs</button>
-          </div>
-          <span class="inline-meta" id="player-count">12 players</span>
-        </aside>
-      </section>
+    .players-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
 
-      <section class="section">
-        <div class="site-shell">
-          <div class="card-grid" id="players-grid"></div>
-        </div>
-      </section>
+    .player-card {
+      background: #1e1e1e;
+      padding: 15px;
+      border-radius: 10px;
+      width: 150px;
+    }
 
-      <section class="section">
-        <div class="site-shell card-grid two">
-          <article class="surface">
-            <span class="eyebrow">How to edit this page</span>
-            <h2>Change the roster in one place</h2>
-            <ul class="bullets">
-              <li>Open <code>assets/data.js</code> and scroll to the <code>players</code> array.</li>
-              <li>Edit names, nicknames, positions, bios, and strengths there. Use the Game Logs page if you want the stats to update game by game.</li>
-              <li>Keep each <code>id</code> unique so the player cards still work.</li>
-              <li>Refresh the browser and this page rebuilds itself automatically from the current season data.</li>
-            </ul>
-          </article>
-          <article class="surface">
-            <span class="eyebrow">Good upgrades later</span>
-            <h2>Ways to make player pages even funnier</h2>
-            <ul class="bullets">
-              <li>Add headshots or edited media-day style pictures.</li>
-              <li>Track player awards, game-winners, or quote-of-the-week.</li>
-              <li>Give each player a season timeline or individual tape playlist.</li>
-              <li>Add rivalry tags so the site can document beef correctly.</li>
-            </ul>
-          </article>
-        </div>
-      </section>
-    </main>
+    .player-card img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
 
-    <footer class="footer">
-      <div class="site-shell footer__panel">
-        <div>
-          <strong data-league-name>The Council of Jah Basketball Association</strong>
-          <p>Roster, bios, player mythology, and season snapshots.</p>
-        </div>
-        <div>
-          <p>&copy; <span data-current-year></span> <span data-league-short>COJBA</span></p>
-        </div>
-      </div>
-    </footer>
+    h1 {
+      margin-top: 20px;
+    }
+  </style>
+</head>
 
-    <script src="assets/data.js"></script>
-    <script src="assets/app.js"></script>
-  </body>
+<body>
+
+<h1>COJBA Players</h1>
+
+<div class="players-container">
+
+  <div class="player-card">
+    <img src="images/players/will-stafford.jpeg" alt="Will Stafford">
+    <h3>Will Stafford</h3>
+    <p>#1 - Guard</p>
+  </div>
+
+</div>
+
+</body>
 </html>
