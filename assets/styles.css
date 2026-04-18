@@ -1,17 +1,17 @@
 :root {
-  --bg: #07100d;
-  --bg-soft: #0d1713;
-  --panel: rgba(15, 24, 20, 0.9);
-  --panel-strong: rgba(19, 29, 24, 0.96);
-  --text: #f5f7f2;
-  --muted: #aab8af;
-  --accent: #9be06c;
-  --accent-2: #f0c75a;
-  --accent-rgb: 155, 224, 108;
-  --accent-2-rgb: 240, 199, 90;
+  --bg: #08111f;
+  --bg-soft: #0e1628;
+  --panel: rgba(13, 22, 39, 0.9);
+  --panel-strong: rgba(16, 25, 45, 0.96);
+  --text: #f4f7fb;
+  --muted: #a7b4ca;
+  --accent: #2f7df6;
+  --accent-2: #f4eb3b;
+  --accent-rgb: 47, 125, 246;
+  --accent-2-rgb: 244, 235, 59;
   --line: rgba(255, 255, 255, 0.1);
-  --success: #5bd29f;
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+  --success: #4fd6c2;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
   --radius-xl: 28px;
   --radius-lg: 20px;
   --radius-md: 14px;
@@ -32,9 +32,9 @@ body {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 26%),
-    radial-gradient(circle at top right, rgba(var(--accent-2-rgb), 0.1), transparent 24%),
-    linear-gradient(180deg, #050b09 0%, #0c1511 100%);
+    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.22), transparent 24%),
+    radial-gradient(circle at top right, rgba(var(--accent-2-rgb), 0.12), transparent 22%),
+    linear-gradient(180deg, #06101d 0%, #0b1424 100%);
   min-height: 100vh;
 }
 
@@ -75,7 +75,7 @@ textarea {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: rgba(5, 11, 9, 0.82);
+  background: rgba(8, 14, 26, 0.84);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--line);
 }
@@ -110,11 +110,11 @@ textarea {
   display: grid;
   place-items: center;
   border-radius: 999px;
-  color: #10131a;
+  color: #0a1120;
   font-weight: 900;
   font-size: 0.78rem;
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  box-shadow: 0 10px 28px rgba(var(--accent-rgb), 0.32);
+  box-shadow: 0 10px 28px rgba(var(--accent-rgb), 0.34);
   flex-shrink: 0;
 }
 
@@ -452,15 +452,16 @@ textarea {
   flex-direction: column;
   gap: 18px;
   min-height: 240px;
-  transition: transform 180ms ease, border-color 180ms ease;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
 
 .player-card:hover,
 .player-card:focus-visible,
 .video-card:hover,
 .video-card.active {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   border-color: rgba(var(--accent-2-rgb), 0.45);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
 }
 
 .player-card:focus-visible,
@@ -489,6 +490,23 @@ select:focus-visible,
   font-size: 1.5rem;
   letter-spacing: -0.03em;
   margin: 0 0 6px;
+}
+
+.player-card__meta h3 {
+  transition: color 180ms ease, transform 180ms ease, text-shadow 180ms ease;
+}
+
+.player-card:hover .player-card__meta h3,
+.player-card:focus-visible .player-card__meta h3 {
+  color: var(--accent-2);
+  transform: translateX(3px);
+  text-shadow: 0 0 18px rgba(var(--accent-rgb), 0.2);
+}
+
+.player-media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nickname {
@@ -890,6 +908,9 @@ code {
   object-position: center top;
   flex-shrink: 0;
   display: block;
+  border: 2px solid rgba(var(--accent-rgb), 0.28);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .player-photo--large {
@@ -1148,5 +1169,27 @@ code {
   .log-field-grid,
   .log-score-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+.players-hero .code-note {
+  margin: 0;
+}
+
+.players-note {
+  width: 100%;
+}
+
+.stats-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.stats-table td {
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .players-hero .filter-row {
+    width: 100%;
   }
 }

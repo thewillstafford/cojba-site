@@ -319,6 +319,10 @@
       ast: games ? round(totals.ast / games, 1) : 0,
       stl: games ? round(totals.stl / games, 1) : 0,
       blk: games ? round(totals.blk / games, 1) : 0,
+      fgm: games ? round(totals.fgm / games, 1) : 0,
+      fga: games ? round(totals.fga / games, 1) : 0,
+      tpm: games ? round(totals.tpm / games, 1) : 0,
+      tpa: games ? round(totals.tpa / games, 1) : 0,
       fg: combinePercentages({
         baseGames: base.games,
         basePct: base.fgPct,
@@ -376,42 +380,120 @@
     };
   };
 
+  const uniqueValues = (items = []) => [...new Set(items.filter(Boolean))];
+
+  const hexToRgbString = (value = '') => {
+    const hex = String(value).trim().replace('#', '');
+    if (!/^[0-9a-fA-F]{6}$/.test(hex)) return '';
+    const normalized = hex.toLowerCase();
+    const red = parseInt(normalized.slice(0, 2), 16);
+    const green = parseInt(normalized.slice(2, 4), 16);
+    const blue = parseInt(normalized.slice(4, 6), 16);
+    return `${red}, ${green}, ${blue}`;
+  };
+
+  const getPlayerImageCandidates = (player = {}) => {
+    const explicit = player.image && String(player.image).trim();
+    const slug = slugify(player.id || player.name || 'player');
+
+    return uniqueValues([
+      explicit,
+      `images/players/${slug}.jpeg`,
+      `images/players/${slug}.jpg`,
+      `images/players/${slug}.png`,
+      `images/players/${slug}.webp`,
+      `assets/images/${slug}.jpeg`,
+      `assets/images/${slug}.jpg`,
+      `assets/images/${slug}.png`,
+      `assets/images/${slug}.webp`
+    ]);
+  };
+
+  const getPhotoClass = (size = 'card') =>
+    size === 'large'
+      ? 'player-photo player-photo--large'
+      : size === 'small'
+        ? 'player-photo player-photo--small'
+        : 'player-photo';
+
+  const getAvatarClass = (size = 'card') =>
+    size === 'large'
+      ? 'avatar-badge large'
+      : size === 'small'
+        ? 'avatar-badge tiny'
+        : 'avatar-badge';
+
   const getPlayerMediaMarkup = (player, size = 'card') => {
-    const src = player.image && String(player.image).trim();
+    const sources = getPlayerImageCandidates(player);
 
-    if (src) {
-      const sizeClass =
-        size === 'large'
-          ? 'player-photo player-photo--large'
-          : size === 'small'
-            ? 'player-photo player-photo--small'
-            : 'player-photo';
-
+    if (sources.length) {
       return `
-        <img
-          src="${escapeHtml(src)}"
-          alt="${escapeHtml(player.name)}"
-          class="${sizeClass}"
-          loading="lazy"
-        />
+        <div class="player-media">
+          <img
+            src="${escapeHtml(sources[0])}"
+            alt="${escapeHtml(player.name)}"
+            class="${getPhotoClass(size)}"
+            loading="lazy"
+            data-fallbacks="${escapeHtml(sources.slice(1).join('|'))}"
+            data-initials="${escapeHtml(getInitials(player.name))}"
+          />
+        </div>
       `;
     }
 
-    const avatarClass =
-      size === 'large'
-        ? 'avatar-badge large'
-        : size === 'small'
-          ? 'avatar-badge tiny'
-          : 'avatar-badge';
+    return `<div class="${getAvatarClass(size)}" aria-hidden="true">${getInitials(player.name)}</div>`;
+  };
 
-    return `<div class="${avatarClass}" aria-hidden="true">${getInitials(player.name)}</div>`;
+  const showImageFallbackBadge = (img) => {
+    const badge = document.createElement('div');
+    badge.className = getAvatarClass(
+      img.classList.contains('player-photo--large')
+        ? 'large'
+        : img.classList.contains('player-photo--small')
+          ? 'small'
+          : 'card'
+    );
+    badge.setAttribute('aria-hidden', 'true');
+    badge.textContent = img.dataset.initials || getInitials(img.alt || '');
+    img.replaceWith(badge);
+  };
+
+  const hydratePlayerMedia = (root = document) => {
+    $$('img[data-fallbacks]', root).forEach((img) => {
+      if (img.dataset.mediaBound === 'true') return;
+      img.dataset.mediaBound = 'true';
+
+      img.addEventListener('error', () => {
+        const fallbacks = (img.dataset.fallbacks || '').split('|').filter(Boolean);
+        const next = fallbacks.shift();
+        img.dataset.fallbacks = fallbacks.join('|');
+
+        if (next) {
+          img.setAttribute('src', next);
+        } else {
+          showImageFallbackBadge(img);
+        }
+      });
+
+      if (img.complete && img.naturalWidth === 0) {
+        img.dispatchEvent(new Event('error'));
+      }
+    });
   };
 
   const applyLeagueTheme = () => {
     const root = document.documentElement;
     const colors = (data.league && data.league.colors) || {};
-    if (colors.accent) root.style.setProperty('--accent', colors.accent);
-    if (colors.accent2) root.style.setProperty('--accent-2', colors.accent2);
+    if (colors.accent) {
+      root.style.setProperty('--accent', colors.accent);
+      const accentRgb = hexToRgbString(colors.accent);
+      if (accentRgb) root.style.setProperty('--accent-rgb', accentRgb);
+    }
+    if (colors.accent2) {
+      root.style.setProperty('--accent-2', colors.accent2);
+      const accent2Rgb = hexToRgbString(colors.accent2);
+      if (accent2Rgb) root.style.setProperty('--accent-2-rgb', accent2Rgb);
+    }
     if (colors.success) root.style.setProperty('--success', colors.success);
   };
 
@@ -547,6 +629,7 @@
       const featured = [...leagueState.players].sort((a, b) => b.stats.pts - a.stats.pts).slice(0, 4);
       playerPreview.innerHTML = featured.map(buildPlayerCard).join('');
       wirePlayerModal(playerPreview);
+      hydratePlayerMedia(playerPreview);
     }
 
     if (videoPreview) {
@@ -687,6 +770,10 @@
             <div><strong>${format(player.stats.ast)}</strong><span>APG</span></div>
             <div><strong>${format(player.stats.stl)}</strong><span>SPG</span></div>
             <div><strong>${format(player.stats.blk)}</strong><span>BPG</span></div>
+            <div><strong>${format(player.stats.fgm)}</strong><span>FGM</span></div>
+            <div><strong>${format(player.stats.fga)}</strong><span>FGA</span></div>
+            <div><strong>${format(player.stats.tpm)}</strong><span>3PM</span></div>
+            <div><strong>${format(player.stats.tpa)}</strong><span>3PA</span></div>
             <div><strong>${format(player.stats.fg)}%</strong><span>FG%</span></div>
             <div><strong>${format(player.stats.three)}%</strong><span>3PT%</span></div>
           </div>
@@ -701,12 +788,18 @@
             <div><strong>${format(player.totals.ast, 0)}</strong><span>AST</span></div>
             <div><strong>${format(player.totals.stl, 0)}</strong><span>STL</span></div>
             <div><strong>${format(player.totals.blk, 0)}</strong><span>BLK</span></div>
-            <div><strong>${format(player.totals.fgm, 0)}-${format(player.totals.fga, 0)}</strong><span>FGM-A</span></div>
-            <div><strong>${format(player.totals.tpm, 0)}-${format(player.totals.tpa, 0)}</strong><span>3PM-A</span></div>
+            <div><strong>${format(player.totals.fgm, 0)}</strong><span>FGM</span></div>
+            <div><strong>${format(player.totals.fga, 0)}</strong><span>FGA</span></div>
+            <div><strong>${format(player.totals.tpm, 0)}</strong><span>3PM</span></div>
+            <div><strong>${format(player.totals.tpa, 0)}</strong><span>3PA</span></div>
+            <div><strong>${format(player.stats.fg)}%</strong><span>FG%</span></div>
+            <div><strong>${format(player.stats.three)}%</strong><span>3PT%</span></div>
           </div>
         </div>
       </div>
     `;
+
+    hydratePlayerMedia(modalState.content);
 
     modalState.modal.classList.remove('hidden');
     document.body.classList.add('no-scroll');
@@ -765,6 +858,7 @@
       if (filtered.length) {
         grid.innerHTML = filtered.map(buildPlayerCard).join('');
         wirePlayerModal(grid);
+        hydratePlayerMedia(grid);
       } else {
         grid.innerHTML = '<div class="empty-state">No players matched that search. Try a different name, role, or position.</div>';
       }
@@ -797,16 +891,18 @@
     if (!container) return;
 
     const categories = [
-      { key: 'pts', label: 'Top Scorers', suffix: 'PPG' },
-      { key: 'reb', label: 'Top Rebounders', suffix: 'RPG' },
-      { key: 'ast', label: 'Top Playmakers', suffix: 'APG' },
-      { key: 'stl', label: 'Top Thieves', suffix: 'SPG' }
+      { label: 'Top Scorers', suffix: 'PPG', digits: 1, getValue: (player) => player.stats.pts },
+      { label: 'Top Rebounders', suffix: 'RPG', digits: 1, getValue: (player) => player.stats.reb },
+      { label: 'Top Playmakers', suffix: 'APG', digits: 1, getValue: (player) => player.stats.ast },
+      { label: 'Best FG%', suffix: 'FG%', digits: 1, getValue: (player) => player.stats.fg },
+      { label: 'Best 3PT%', suffix: '3PT%', digits: 1, getValue: (player) => player.stats.three },
+      { label: 'Total Points', suffix: 'PTS', digits: 0, getValue: (player) => player.totals.pts }
     ];
 
     container.innerHTML = categories
-      .map(({ key, label, suffix }) => {
-        const sorted = [...leagueState.players].sort((a, b) => b.stats[key] - a.stats[key]).slice(0, 5);
-        const max = sorted[0] ? sorted[0].stats[key] || 1 : 1;
+      .map(({ label, suffix, digits, getValue }) => {
+        const sorted = [...leagueState.players].sort((a, b) => getValue(b) - getValue(a)).slice(0, 5);
+        const max = sorted[0] ? getValue(sorted[0]) || 1 : 1;
 
         return `
           <section class="leader-card">
@@ -816,19 +912,20 @@
             </div>
             <div class="leader-bars">
               ${sorted
-                .map(
-                  (player) => `
+                .map((player) => {
+                  const value = getValue(player);
+                  return `
                     <div class="leader-row">
                       <div class="leader-row__text">
                         <span>${escapeHtml(player.name)}</span>
-                        <strong>${format(player.stats[key])} ${suffix}</strong>
+                        <strong>${format(value, digits)} ${suffix}</strong>
                       </div>
                       <div class="leader-bar-track">
-                        <div class="leader-bar-fill" style="width: ${(player.stats[key] / max) * 100}%"></div>
+                        <div class="leader-bar-fill" style="width: ${max ? (value / max) * 100 : 0}%"></div>
                       </div>
                     </div>
-                  `
-                )
+                  `;
+                })
                 .join('')}
             </div>
           </section>
@@ -837,52 +934,39 @@
       .join('');
   };
 
-  const renderStatsTable = () => {
-    const tableBody = $('#stats-table-body');
-    const table = $('#stats-table');
-    if (!tableBody || !table) return;
+  const getSortablePlayerValue = (player, path = '') => {
+    const [scope, key] = String(path).split('.');
 
-    let sortKey = 'pts';
+    if (scope === 'totals') return safeNumber(player.totals && player.totals[key]);
+    if (scope === 'stats') return safeNumber(player.stats && player.stats[key]);
+
+    return safeNumber(player[path]);
+  };
+
+  const renderPlayerStatsTable = ({ table, body, defaultSort, rowTemplate }) => {
+    if (!table || !body) return;
+
+    let sortKey = defaultSort;
     let sortDirection = 'desc';
 
-    const rows = () =>
-      [...leagueState.players].sort((a, b) => {
-        const aVal = a.stats[sortKey];
-        const bVal = b.stats[sortKey];
-        const delta = bVal - aVal;
-        return sortDirection === 'desc' ? delta : -delta;
+    const render = () => {
+      const sortedPlayers = [...leagueState.players].sort((a, b) => {
+        const delta = getSortablePlayerValue(b, sortKey) - getSortablePlayerValue(a, sortKey);
+        if (delta !== 0) return sortDirection === 'desc' ? delta : -delta;
+        return a.name.localeCompare(b.name);
       });
 
-    const render = () => {
-      tableBody.innerHTML = rows()
-        .map(
-          (player) => `
-            <tr>
-              <td>
-                <div class="table-player">
-                  ${getPlayerMediaMarkup(player, 'small')}
-                  <div>
-                    <strong>${escapeHtml(player.name)}</strong>
-                    <span>${escapeHtml(player.team || 'Independent')}</span>
-                  </div>
-                </div>
-              </td>
-              <td>${escapeHtml(player.position)}</td>
-              <td>${format(player.stats.games, 0)}</td>
-              <td>${format(player.stats.pts)}</td>
-              <td>${format(player.stats.reb)}</td>
-              <td>${format(player.stats.ast)}</td>
-              <td>${format(player.stats.stl)}</td>
-              <td>${format(player.stats.blk)}</td>
-              <td>${format(player.stats.fg)}%</td>
-              <td>${format(player.stats.three)}%</td>
-            </tr>
-          `
-        )
-        .join('');
+      body.innerHTML = sortedPlayers.map((player) => rowTemplate(player)).join('');
+      hydratePlayerMedia(body);
+
+      $$('button[data-sort]', table).forEach((button) => {
+        button.classList.toggle('active', button.dataset.sort === sortKey);
+      });
     };
 
     $$('button[data-sort]', table).forEach((button) => {
+      if (button.dataset.sortBound === 'true') return;
+      button.dataset.sortBound = 'true';
       button.addEventListener('click', () => {
         const nextKey = button.dataset.sort;
         if (sortKey === nextKey) {
@@ -891,14 +975,80 @@
           sortKey = nextKey;
           sortDirection = 'desc';
         }
-
-        $$('button[data-sort]', table).forEach((btn) => btn.classList.remove('active'));
-        button.classList.add('active');
         render();
       });
     });
 
     render();
+  };
+
+  const renderStatsTable = () => {
+    const averagesTable = $('#stats-averages-table');
+    const averagesBody = $('#stats-averages-table-body');
+    const totalsTable = $('#stats-totals-table');
+    const totalsBody = $('#stats-totals-table-body');
+
+    renderPlayerStatsTable({
+      table: averagesTable,
+      body: averagesBody,
+      defaultSort: 'stats.pts',
+      rowTemplate: (player) => `
+        <tr>
+          <td>
+            <div class="table-player">
+              ${getPlayerMediaMarkup(player, 'small')}
+              <div>
+                <strong>${escapeHtml(player.name)}</strong>
+                <span>${escapeHtml(player.team || 'Independent')}</span>
+              </div>
+            </div>
+          </td>
+          <td>${escapeHtml(player.position)}</td>
+          <td>${format(player.stats.games, 0)}</td>
+          <td>${format(player.stats.pts)}</td>
+          <td>${format(player.stats.reb)}</td>
+          <td>${format(player.stats.ast)}</td>
+          <td>${format(player.stats.stl)}</td>
+          <td>${format(player.stats.blk)}</td>
+          <td>${format(player.stats.fgm)}</td>
+          <td>${format(player.stats.fga)}</td>
+          <td>${format(player.stats.tpm)}</td>
+          <td>${format(player.stats.tpa)}</td>
+          <td>${format(player.stats.fg)}%</td>
+          <td>${format(player.stats.three)}%</td>
+        </tr>
+      `
+    });
+
+    renderPlayerStatsTable({
+      table: totalsTable,
+      body: totalsBody,
+      defaultSort: 'totals.pts',
+      rowTemplate: (player) => `
+        <tr>
+          <td>
+            <div class="table-player">
+              ${getPlayerMediaMarkup(player, 'small')}
+              <div>
+                <strong>${escapeHtml(player.name)}</strong>
+                <span>${escapeHtml(player.team || 'Independent')}</span>
+              </div>
+            </div>
+          </td>
+          <td>${escapeHtml(player.position)}</td>
+          <td>${format(player.totals.pts, 0)}</td>
+          <td>${format(player.totals.reb, 0)}</td>
+          <td>${format(player.totals.ast, 0)}</td>
+          <td>${format(player.totals.stl, 0)}</td>
+          <td>${format(player.totals.blk, 0)}</td>
+          <td>${format(player.totals.fgm, 0)}</td>
+          <td>${format(player.totals.fga, 0)}</td>
+          <td>${format(player.totals.tpm, 0)}</td>
+          <td>${format(player.totals.tpa, 0)}</td>
+          <td>${format(player.totals.games, 0)}</td>
+        </tr>
+      `
+    });
   };
 
   const renderStats = () => {
@@ -1123,6 +1273,8 @@
     tbody.innerHTML = leagueState.players
       .map((player) => buildPlayerLineRow(player, existingByPlayerId.get(player.id) || normalizePlayerLine({ playerId: player.id })))
       .join('');
+
+    hydratePlayerMedia(tbody);
 
     $$('.log-input', tbody).forEach((input) => {
       input.addEventListener('input', () => {
@@ -1397,6 +1549,8 @@
         `;
       })
       .join('');
+
+    hydratePlayerMedia(list);
 
     $$('.game-log-edit', list).forEach((button) => {
       button.addEventListener('click', () => {

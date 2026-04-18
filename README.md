@@ -29,3 +29,7 @@ If you want a shared live league admin setup later, you will need a database/bac
 - `assets/data.js` = roster, bios, videos, base stats
 - `assets/app.js` = page logic and stat recalculation
 - `assets/styles.css` = visual design
+
+
+## Player photos
+Put headshots in `images/players/` and name them with the player id format, like `will-stafford.jpeg`. The site will try to use those automatically across the roster, stats, and game logs.

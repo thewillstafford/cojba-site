@@ -26,6 +26,11 @@ window.siteData = {
     location: 'Undisclosed concrete court somewhere in Arkansas',
     commissioner: 'The Council of Jah',
     motto: 'Banners fade. Receipts do not.',
+    colors: {
+      accent: '#2f7df6',
+      accent2: '#f4eb3b',
+      success: '#4fd6c2'
+    },
     heroBlurb:
       'The official unofficial media home for the most overanalyzed fake basketball league alive.',
     description:
@@ -276,7 +281,8 @@ window.siteData = {
   seasonNotes: [
     'This version is set up with the 12 player names you sent over.',
     'You can still edit player bios, videos, and league text in assets/data.js.',
-    'The new Game Logs page saves individual games and recalculates season stats automatically.',
+    'The Game Logs page saves individual games on-site and recalculates season stats automatically.',
+    'Drop player headshots into images/players using the player id format like will-stafford.jpeg.',
     'Export your game logs after big updates so you always have a backup.'
   ]
 };
