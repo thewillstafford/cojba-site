@@ -179,8 +179,6 @@
   const normalizeGameLogs = (logs) => (Array.isArray(logs) ? sortLogsDesc(logs.map(normalizeGameLog)) : []);
 
   const loadGameLogs = async () => {
-  if (Array.isArray(runtimeGameLogs)) return normalizeGameLogs(runtimeGameLogs);
-
   try {
     const { data: logs } = await supabase.from("game_logs").select("*");
     const { data: stats } = await supabase.from("player_stats").select("*");
@@ -1385,30 +1383,94 @@
     if (page === 'game-logs') renderGameLogsPage();
   };
 
-  const upsertGameLog = (log) => {
-    const logs = [...leagueState.gameLogs];
-    const index = logs.findIndex((entry) => entry.id === log.id);
-    if (index >= 0) {
-      logs[index] = log;
-    } else {
-      logs.push(log);
+  const upsertGameLog = async (log) => {
+  try {
+    const { data: savedLog, error: logError } = await supabase
+      .from("game_logs")
+     .upsert({
+  id: log.id, // <-- ADD THIS BACK
+  date: log.date,
+  title: log.title,
+  format: log.format,
+  location: log.location,
+  team_a: log.teamA,
+  team_b: log.teamB,
+  score_a: log.scoreA,
+  score_b: log.scoreB,
+  notes: log.notes
+})
+      .select()
+      .single();
+
+    if (logError) throw logError;
+
+    await supabase
+      .from("player_stats")
+      .delete()
+      .eq("game_log_id", savedLog.id);
+
+    const statsToInsert = log.playerStats.map(line => ({
+      game_log_id: savedLog.id,
+      player_id: line.playerId,
+      played: line.played,
+      pts: line.pts,
+      reb: line.reb,
+      ast: line.ast,
+      stl: line.stl,
+      blk: line.blk,
+      fgm: line.fgm,
+      fga: line.fga,
+      tpm: line.tpm,
+      tpa: line.tpa
+    }));
+
+    if (statsToInsert.length) {
+      const { error: statsError } = await supabase
+        .from("player_stats")
+        .insert(statsToInsert);
+
+      if (statsError) throw statsError;
     }
-    persistGameLogs(logs);
-    rerenderWithCurrentState();
+
+    runtimeGameLogs = await loadGameLogs();
+    leagueState = buildLeagueState();
+
+    renderGameLogsPage();
+    setGlobalText();
+
     populateGameLogForm(emptyGameLogDraft());
-    setFormStatus(`Saved “${log.title}”. Stats across the site are now updated.`, 'success');
-  };
 
-  const deleteGameLog = (logId) => {
-    const log = leagueState.gameLogs.find((entry) => entry.id === logId);
-    if (!log) return;
-    if (!window.confirm(`Delete “${log.title}”? This will recalculate the whole site.`)) return;
+    setFormStatus(`Saved "${log.title}" to database.`, 'success');
 
-    persistGameLogs(leagueState.gameLogs.filter((entry) => entry.id !== logId));
-    rerenderWithCurrentState();
-    if (gameLogFormState.editingId === logId) populateGameLogForm(emptyGameLogDraft());
-    setFormStatus(`Deleted “${log.title}”.`, 'success');
-  };
+  } catch (err) {
+    console.error(err);
+    setFormStatus("Failed to save to database.", "error");
+  }
+};
+
+  const deleteGameLog = async (logId) => {
+  const log = leagueState.gameLogs.find((entry) => entry.id === logId);
+  if (!log) return;
+
+  if (!window.confirm(`Delete "${log.title}"?`)) return;
+
+  try {
+    await supabase.from("player_stats").delete().eq("game_log_id", logId);
+    await supabase.from("game_logs").delete().eq("id", logId);
+
+    runtimeGameLogs = await loadGameLogs();
+    leagueState = buildLeagueState();
+
+    renderGameLogsPage();
+    setGlobalText();
+
+    setFormStatus(`Deleted "${log.title}"`, "success");
+
+  } catch (err) {
+    console.error(err);
+    setFormStatus("Delete failed", "error");
+  }
+};
 
   const exportGameLogs = () => {
     const payload = {
