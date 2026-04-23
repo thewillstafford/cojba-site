@@ -222,18 +222,9 @@
 };
 
   const persistGameLogs = (logs) => {
-    runtimeGameLogs = normalizeGameLogs(logs);
-
-    if (HAS_STORAGE) {
-      try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(runtimeGameLogs));
-      } catch (error) {
-        console.warn('Could not save game logs:', error);
-      }
-    }
-
-    return runtimeGameLogs;
-  };
+  runtimeGameLogs = normalizeGameLogs(logs);
+  return runtimeGameLogs;
+};
 
   const getBaseSnapshot = (player) => {
     const stats = player.stats || {};
@@ -1501,8 +1492,9 @@
         return;
       }
 
-      persistGameLogs(imported);
-      rerenderWithCurrentState();
+      for (const log of imported) {
+  await upsertGameLog(log);
+}
       populateGameLogForm(emptyGameLogDraft());
       setFormStatus(`Imported ${imported.length} game log${imported.length === 1 ? '' : 's'}.`, 'success');
     } catch (error) {
@@ -1697,10 +1689,13 @@
 
     const resetAllButton = $('#reset-all-game-logs');
     if (resetAllButton) {
-      resetAllButton.addEventListener('click', () => {
+      resetAllButton.addEventListener('click', async () => {
         if (!window.confirm('Reset every saved game log? This will roll the whole site back to the base stats in assets/data.js.')) return;
-        persistGameLogs([]);
-        rerenderWithCurrentState();
+        await supabase.from("player_stats").delete().not("id", "is", null);
+await supabase.from("game_logs").delete().not("id", "is", null);
+
+runtimeGameLogs = [];
+rerenderWithCurrentState();
         populateGameLogForm(emptyGameLogDraft());
         setFormStatus('All saved game logs were reset.', 'success');
       });
