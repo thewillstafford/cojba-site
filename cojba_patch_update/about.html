@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About | The Council of Jah Basketball Association</title>
+    <meta name="description" content="About The Council of Jah Basketball Association, its format, and its fake-media mythology." />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="about">
+    <header class="topbar">
+      <div class="site-shell topbar__inner">
+        <a class="brand" href="index.html" aria-label="Go to homepage">
+          <span class="brand__mark" data-league-short>COJBA</span>
+          <span data-league-name>The Council of Jah Basketball Association</span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="index.html">Home</a>
+          <a class="active" href="about.html">About</a>
+          <a href="players.html">Meet the Players</a>
+          <a href="stats.html">Stats</a>
+          <a href="game-logs.html">Game Logs</a>
+          <a href="videos.html">Videos</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero site-shell">
+        <div class="page-hero__panel">
+          <span class="eyebrow">About the league</span>
+          <h1>The most overcovered fake basketball league on earth</h1>
+          <p id="about-description">
+            A friend-run basketball league presented with the tone of a national sports institution and the emotional stability of a group chat.
+          </p>
+        </div>
+        <aside class="page-hero__panel">
+          <span class="eyebrow">League details</span>
+          <div id="league-details" class="info-cluster"></div>
+        </aside>
+      </section>
+
+      <section class="section">
+        <div class="site-shell card-grid two">
+          <article class="surface list-card">
+            <span class="eyebrow">How it works</span>
+            <h2>League format</h2>
+            <ul id="format-list"></ul>
+          </article>
+          <article class="surface list-card">
+            <span class="eyebrow">What matters</span>
+            <h2>Core values of the council</h2>
+            <ul id="values-list"></ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="site-shell card-grid two">
+          <article class="surface">
+            <span class="eyebrow">Why build a site for this?</span>
+            <h2>Because mythology needs receipts</h2>
+            <p>
+              Friend leagues are funniest when everyone agrees to take them way too seriously. The second there is a roster page, a stat leaderboard,
+              and a tape archive, the whole thing stops feeling like random runs and starts feeling like a living season.
+            </p>
+            <p>
+              This site turns game nights into history. It gives your league a place for legends, slander, evidence, redemption arcs, and entirely too much analysis.
+            </p>
+          </article>
+          <article class="surface list-card">
+            <span class="eyebrow">House rules</span>
+            <h2>League culture</h2>
+            <ul id="rules-list"></ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="site-shell">
+          <article class="surface">
+            <span class="eyebrow">Easy upgrades</span>
+            <h2>Good next additions after version one</h2>
+            <div class="card-grid">
+              <article class="list-card">
+                <h3>Awards cabinet</h3>
+                <p>Add MVP, Defensive Player of the Year, Sixth Man, and Most Delusional Confidence rankings.</p>
+              </article>
+              <article class="list-card">
+                <h3>Power rankings</h3>
+                <p>Drop weekly rankings so nobody can claim the site is biased without proof.</p>
+              </article>
+              <article class="list-card">
+                <h3>All-time archive</h3>
+                <p>Store past seasons, champions, records, quotes, and every moment that still gets brought up months later.</p>
+              </article>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="site-shell footer__panel">
+        <div>
+          <strong data-league-name>The Council of Jah Basketball Association</strong>
+          <p>League format, culture, and official origin story.</p>
+        </div>
+        <div>
+          <p>&copy; <span data-current-year></span> <span data-league-short>COJBA</span></p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="assets/app.js"></script>
+  </body>
+</html>

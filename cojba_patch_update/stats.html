@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stats | The Council of Jah Basketball Association</title>
+    <meta name="description" content="League stats page with leaderboards, per-game averages, and season totals for The Council of Jah Basketball Association." />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="stats">
+    <header class="topbar">
+      <div class="site-shell topbar__inner">
+        <a class="brand" href="index.html" aria-label="Go to homepage">
+          <span class="brand__mark" data-league-short>COJBA</span>
+          <span data-league-name>The Council of Jah Basketball Association</span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="players.html">Meet the Players</a>
+          <a class="active" href="stats.html">Stats</a>
+          <a href="game-logs.html">Game Logs</a>
+          <a href="videos.html">Videos</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero site-shell">
+        <div class="page-hero__panel">
+          <span class="eyebrow">Stats page</span>
+          <h1>Let the numbers handle the slander</h1>
+          <p>
+            This page now shows both season totals and per-game averages. When saved game logs exist,
+            the player cards, leaderboards, and tables all rebuild themselves from those on-site updates.
+          </p>
+        </div>
+        <aside class="page-hero__panel">
+          <span class="eyebrow">Headline leaders</span>
+          <div class="info-cluster" id="stats-summary"></div>
+          <p class="code-note" style="margin-top: 14px" data-stats-source-note>No saved game logs yet. Current season stats are coming from assets/data.js.</p>
+        </aside>
+      </section>
+
+      <section class="section">
+        <div class="site-shell">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Leaderboards</span>
+              <h2>Who is moving the season?</h2>
+            </div>
+            <p class="section-subtext">Top-five bars make it easy to see who is running scoring, rebounding, playmaking, shooting, and total production.</p>
+          </div>
+          <div class="leaderboards-grid" id="leaderboards"></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="site-shell stack">
+          <div>
+            <div class="section-head">
+              <div>
+                <span class="eyebrow">Per-game averages</span>
+                <h2>Sortable averages table</h2>
+              </div>
+              <p class="section-subtext">This table includes FGM, FGA, 3PM, and 3PA on a per-game basis.</p>
+            </div>
+            <div class="table-wrap">
+              <table class="stats-table" id="stats-averages-table">
+                <thead>
+                  <tr>
+                    <th>Player</th>
+                    <th>Pos</th>
+                    <th><button class="sort-button" type="button" data-sort="stats.games">G</button></th>
+                    <th><button class="sort-button active" type="button" data-sort="stats.pts">PPG</button></th>
+                    <th><button class="sort-button" type="button" data-sort="stats.reb">RPG</button></th>
+                    <th><button class="sort-button" type="button" data-sort="stats.ast">APG</button></th>
+                    <th><button class="sort-button" type="button" data-sort="stats.stl">SPG</button></th>
+                    <th><button class="sort-button" type="button" data-sort="stats.blk">BPG</button></th>
+                    <th><button class="sort-button" type="button" data-sort="stats.fgm">FGM</button></th>
+                    <th><button class="sort-button" type="button" data-sort="stats.fga">FGA</button></th>
+                    <th><button class="sort-button" type="button" data-sort="stats.tpm">3PM</button></th>
+                    <th><button class="sort-button" type="button" data-sort="stats.tpa">3PA</button></th>
+                    <th><button class="sort-button" type="button" data-sort="stats.fg">FG%</button></th>
+                    <th><button class="sort-button" type="button" data-sort="stats.three">3PT%</button></th>
+                  </tr>
+                </thead>
+                <tbody id="stats-averages-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-head">
+              <div>
+                <span class="eyebrow">Season totals</span>
+                <h2>Everything added up</h2>
+              </div>
+              <p class="section-subtext">This table totals every saved player line from the game logs on the site.</p>
+            </div>
+            <div class="table-wrap">
+              <table class="stats-table" id="stats-totals-table">
+                <thead>
+                  <tr>
+                    <th>Player</th>
+                    <th>Pos</th>
+                    <th><button class="sort-button active" type="button" data-sort="totals.pts">PTS</button></th>
+                    <th><button class="sort-button" type="button" data-sort="totals.reb">REB</button></th>
+                    <th><button class="sort-button" type="button" data-sort="totals.ast">AST</button></th>
+                    <th><button class="sort-button" type="button" data-sort="totals.stl">STL</button></th>
+                    <th><button class="sort-button" type="button" data-sort="totals.blk">BLK</button></th>
+                    <th><button class="sort-button" type="button" data-sort="totals.fgm">FGM</button></th>
+                    <th><button class="sort-button" type="button" data-sort="totals.fga">FGA</button></th>
+                    <th><button class="sort-button" type="button" data-sort="totals.tpm">3PM</button></th>
+                    <th><button class="sort-button" type="button" data-sort="totals.tpa">3PA</button></th>
+                    <th><button class="sort-button" type="button" data-sort="totals.games">G</button></th>
+                  </tr>
+                </thead>
+                <tbody id="stats-totals-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="site-shell card-grid two">
+          <article class="surface">
+            <span class="eyebrow">Easy add-ons</span>
+            <h2>Ways to expand the stat empire</h2>
+            <ul class="bullets">
+              <li>Add standings, win-loss records, and point differential.</li>
+              <li>Track awards races once enough games stack up.</li>
+              <li>Keep using the Game Logs page so the site recalculates itself after every run.</li>
+              <li>Build all-time leaderboards after the first full season ends.</li>
+            </ul>
+          </article>
+          <article class="surface">
+            <span class="eyebrow">Editing note</span>
+            <h2>Where these numbers live</h2>
+            <p class="code-note">
+              Use the Game Logs page for live season updates. <code>assets/data.js</code> still acts as the base roster + bio file, but the game entry happens on the site now.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="site-shell footer__panel">
+        <div>
+          <strong data-league-name>The Council of Jah Basketball Association</strong>
+          <p>Leaderboards, per-game averages, season totals, and receipts.</p>
+        </div>
+        <div>
+          <p>&copy; <span data-current-year></span> <span data-league-short>COJBA</span></p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="assets/app.js"></script>
+  </body>
+</html>

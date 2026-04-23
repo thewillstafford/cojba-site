@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meet the Players | The Council of Jah Basketball Association</title>
+    <meta
+      name="description"
+      content="Full COJBA roster with player files, scouting reports, live stats, and headshots that auto-load from your player image folder."
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="players">
+    <header class="topbar">
+      <div class="site-shell topbar__inner">
+        <a class="brand" href="index.html" aria-label="Go to homepage">
+          <span class="brand__mark" data-league-short>COJBA</span>
+          <span data-league-name>The Council of Jah Basketball Association</span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a class="active" href="players.html">Meet the Players</a>
+          <a href="stats.html">Stats</a>
+          <a href="game-logs.html">Game Logs</a>
+          <a href="videos.html">Videos</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero site-shell players-hero">
+        <div class="page-hero__panel">
+          <span class="eyebrow">Meet the players</span>
+          <h1>The full council roster, with receipts attached.</h1>
+          <p>
+            Click any name to open the full player file. Profiles pull in bios, strengths, live season totals,
+            shooting numbers, and every game-log update already stored on the site.
+          </p>
+        </div>
+        <aside class="page-hero__panel">
+          <span class="eyebrow">Roster tools</span>
+          <div class="stack">
+            <input
+              id="player-search"
+              class="input"
+              type="text"
+              placeholder="Search name, nickname, team, or position"
+            />
+            <div class="filter-row">
+              <button class="filter-button active" type="button" data-filter="ALL">All</button>
+              <button class="filter-button" type="button" data-filter="GUARDS">Guards</button>
+              <button class="filter-button" type="button" data-filter="WINGS">Wings</button>
+              <button class="filter-button" type="button" data-filter="BIGS">Bigs</button>
+            </div>
+            <span class="inline-meta" id="player-count">12 players</span>
+            <p class="code-note players-note">
+              Headshots auto-load from <code>images/players/</code> when the file name matches the player id,
+              like <code>will-stafford.jpeg</code>.
+            </p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section">
+        <div class="site-shell">
+          <div class="card-grid" id="players-grid"></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="site-shell card-grid two">
+          <article class="surface">
+            <span class="eyebrow">Player photos</span>
+            <h2>How the headshots connect</h2>
+            <ul class="bullets">
+              <li>Put each image in <code>images/players/</code>.</li>
+              <li>Name each file with the player id, like <code>john-doe.jpeg</code>.</li>
+              <li>The cards, player modals, stat tables, and game logs will all try to use that photo automatically.</li>
+            </ul>
+          </article>
+          <article class="surface">
+            <span class="eyebrow">Live season setup</span>
+            <h2>Profiles stay tied to the numbers</h2>
+            <p class="code-note">
+              Use the Game Logs page to enter each run on-site. Player files, leaderboards, totals, and averages all update from those saved logs.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="site-shell footer__panel">
+        <div>
+          <strong data-league-name>The Council of Jah Basketball Association</strong>
+          <p>Full roster, live player files, and scouting-report propaganda.</p>
+        </div>
+        <div>
+          <p>&copy; <span data-current-year></span> <span data-league-short>COJBA</span></p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="assets/app.js"></script>
+  </body>
+</html>
