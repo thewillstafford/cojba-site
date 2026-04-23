@@ -1,5 +1,9 @@
 (function () {
   const data = window.siteData || {};
+  const supabase = window.supabase.createClient(
+  "https://itfqgvpawnvhuvhplgtv.supabase.co",
+  "sb_publishable_X9p5nBBfiuYHfv1Aea-RGA_Wy8JApGn"
+);
   const page = document.body.dataset.page || '';
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -174,38 +178,53 @@
 
   const normalizeGameLogs = (logs) => (Array.isArray(logs) ? sortLogsDesc(logs.map(normalizeGameLog)) : []);
 
-  const loadGameLogs = () => {
-    if (Array.isArray(runtimeGameLogs)) return normalizeGameLogs(runtimeGameLogs);
+  const loadGameLogs = async () => {
+  try {
+    const { data: logs } = await supabase.from("game_logs").select("*");
+    const { data: stats } = await supabase.from("player_stats").select("*");
 
-    if (HAS_STORAGE) {
-      try {
-        const raw = window.localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          runtimeGameLogs = normalizeGameLogs(JSON.parse(raw));
-          return runtimeGameLogs;
-        }
-      } catch (error) {
-        console.warn('Could not load saved game logs:', error);
-      }
-    }
+    const grouped = (logs || []).map(log => ({
+      id: log.id,
+      date: log.date,
+      title: log.title,
+      format: log.format,
+      location: log.location,
+      teamA: log.team_a,
+      teamB: log.team_b,
+      scoreA: log.score_a,
+      scoreB: log.score_b,
+      notes: log.notes,
+      playerStats: (stats || [])
+        .filter(s => s.game_log_id === log.id)
+        .map(s => ({
+          playerId: s.player_id,
+          played: s.played,
+          pts: safeNumber(s.pts),
+          reb: safeNumber(s.reb),
+          ast: safeNumber(s.ast),
+          stl: safeNumber(s.stl),
+          blk: safeNumber(s.blk),
+          fgm: safeNumber(s.fgm),
+          fga: safeNumber(s.fga),
+          tpm: safeNumber(s.tpm),
+          tpa: safeNumber(s.tpa)
+        }))
+    }));
 
-    runtimeGameLogs = normalizeGameLogs(data.gameLogs || []);
+    runtimeGameLogs = normalizeGameLogs(grouped);
     return runtimeGameLogs;
-  };
+
+  } catch (err) {
+    console.warn("Supabase load failed:", err);
+  }
+
+  return [];
+};
 
   const persistGameLogs = (logs) => {
-    runtimeGameLogs = normalizeGameLogs(logs);
-
-    if (HAS_STORAGE) {
-      try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(runtimeGameLogs));
-      } catch (error) {
-        console.warn('Could not save game logs:', error);
-      }
-    }
-
-    return runtimeGameLogs;
-  };
+  runtimeGameLogs = normalizeGameLogs(logs);
+  return runtimeGameLogs;
+};
 
   const getBaseSnapshot = (player) => {
     const stats = player.stats || {};
@@ -357,7 +376,7 @@
 
   const buildLeagueState = () => {
     const players = Array.isArray(data.players) ? data.players : [];
-    const gameLogs = loadGameLogs();
+    const gameLogs = runtimeGameLogs || [];
     const logAggregates = buildLogAggregates(players, gameLogs);
     const computedPlayers = players.map((player) => computePlayerStats(player, logAggregates.get(player.id)));
     const playersById = new Map(computedPlayers.map((player) => [player.id, player]));
@@ -1355,30 +1374,97 @@
     if (page === 'game-logs') renderGameLogsPage();
   };
 
-  const upsertGameLog = (log) => {
-    const logs = [...leagueState.gameLogs];
-    const index = logs.findIndex((entry) => entry.id === log.id);
-    if (index >= 0) {
-      logs[index] = log;
-    } else {
-      logs.push(log);
+  const upsertGameLog = async (log) => {
+  try {
+    const { data: savedLog, error: logError } = await supabase
+      .from("game_logs")
+     .upsert({
+  id: log.id, // <-- ADD THIS BACK
+  date: log.date,
+  title: log.title,
+  format: log.format,
+  location: log.location,
+  team_a: log.teamA,
+  team_b: log.teamB,
+  score_a: log.scoreA,
+  score_b: log.scoreB,
+  notes: log.notes
+})
+      .select()
+      .single();
+
+console.log("SAVED LOG:", savedLog);
+console.log("ERROR:", logError);
+
+    if (logError) throw logError;
+
+    await supabase
+      .from("player_stats")
+      .delete()
+      .eq("game_log_id", savedLog.id);
+
+    const statsToInsert = log.playerStats.map(line => ({
+      game_log_id: savedLog.id,
+      player_id: line.playerId,
+      played: line.played,
+      pts: line.pts,
+      reb: line.reb,
+      ast: line.ast,
+      stl: line.stl,
+      blk: line.blk,
+      fgm: line.fgm,
+      fga: line.fga,
+      tpm: line.tpm,
+      tpa: line.tpa
+    }));
+
+    if (statsToInsert.length) {
+      const { error: statsError } = await supabase
+        .from("player_stats")
+        .insert(statsToInsert);
+
+      if (statsError) throw statsError;
     }
-    persistGameLogs(logs);
-    rerenderWithCurrentState();
+
+    runtimeGameLogs = await loadGameLogs();
+    leagueState = buildLeagueState();
+
+    renderGameLogsPage();
+    setGlobalText();
+
     populateGameLogForm(emptyGameLogDraft());
-    setFormStatus(`Saved “${log.title}”. Stats across the site are now updated.`, 'success');
-  };
 
-  const deleteGameLog = (logId) => {
-    const log = leagueState.gameLogs.find((entry) => entry.id === logId);
-    if (!log) return;
-    if (!window.confirm(`Delete “${log.title}”? This will recalculate the whole site.`)) return;
+    setFormStatus(`Saved "${log.title}" to database.`, 'success');
 
-    persistGameLogs(leagueState.gameLogs.filter((entry) => entry.id !== logId));
-    rerenderWithCurrentState();
-    if (gameLogFormState.editingId === logId) populateGameLogForm(emptyGameLogDraft());
-    setFormStatus(`Deleted “${log.title}”.`, 'success');
-  };
+  } catch (err) {
+    console.error(err);
+    setFormStatus("Failed to save to database.", "error");
+  }
+};
+
+  const deleteGameLog = async (logId) => {
+  const log = leagueState.gameLogs.find((entry) => entry.id === logId);
+  if (!log) return;
+
+  if (!window.confirm(`Delete "${log.title}"?`)) return;
+
+  try {
+    await supabase.from("player_stats").delete().eq("game_log_id", logId);
+    await supabase.from("game_logs").delete().eq("id", logId);
+
+    runtimeGameLogs = await loadGameLogs();
+    leagueState = buildLeagueState();
+
+    renderGameLogsPage();
+    setGlobalText();
+
+    setFormStatus(`Deleted "${log.title}"`, "success");
+
+  } catch (err) {
+    console.error(err);
+    setFormStatus("Delete failed", "error");
+  }
+};
 
   const exportGameLogs = () => {
     const payload = {
@@ -1409,8 +1495,9 @@
         return;
       }
 
-      persistGameLogs(imported);
-      rerenderWithCurrentState();
+      for (const log of imported) {
+  await upsertGameLog(log);
+}
       populateGameLogForm(emptyGameLogDraft());
       setFormStatus(`Imported ${imported.length} game log${imported.length === 1 ? '' : 's'}.`, 'success');
     } catch (error) {
@@ -1573,11 +1660,17 @@
     form.dataset.wired = 'true';
 
     form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const log = collectGameLogFromForm();
-      if (!log) return;
-      upsertGameLog(log);
-    });
+  event.preventDefault();
+
+  console.log("FORM SUBMITTED"); // 👈 ADD THIS
+
+  const log = collectGameLogFromForm();
+  console.log("COLLECTED LOG:", log); // 👈 ADD THIS
+
+  if (!log) return;
+
+  upsertGameLog(log);
+});
 
     const resetFormButton = $('#reset-log-form');
     if (resetFormButton) {
@@ -1605,10 +1698,13 @@
 
     const resetAllButton = $('#reset-all-game-logs');
     if (resetAllButton) {
-      resetAllButton.addEventListener('click', () => {
+      resetAllButton.addEventListener('click', async () => {
         if (!window.confirm('Reset every saved game log? This will roll the whole site back to the base stats in assets/data.js.')) return;
-        persistGameLogs([]);
-        rerenderWithCurrentState();
+        await supabase.from("player_stats").delete().not("id", "is", null);
+await supabase.from("game_logs").delete().not("id", "is", null);
+
+runtimeGameLogs = [];
+rerenderWithCurrentState();
         populateGameLogForm(emptyGameLogDraft());
         setFormStatus('All saved game logs were reset.', 'success');
       });
@@ -1635,9 +1731,14 @@
     }
   };
 
+  document.addEventListener("DOMContentLoaded", async () => {
   applyLeagueTheme();
   ensureGameLogsNavLink();
+
+  runtimeGameLogs = await loadGameLogs();
+
   leagueState = buildLeagueState();
+
   setGlobalText();
   renderSeasonNotes();
 
@@ -1647,4 +1748,4 @@
   if (page === 'stats') renderStats();
   if (page === 'videos') renderVideos();
   if (page === 'game-logs') renderGameLogsPage();
-})();
+});
