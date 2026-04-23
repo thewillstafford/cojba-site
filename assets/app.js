@@ -1,9 +1,15 @@
 (function () {
   const data = window.siteData || {};
-  const supabase = window.supabase.createClient(
-  "https://itfqgvpawnvhuvhplgtv.supabase.co",
-  "sb_publishable_X9p5nBBfiuYHfv1Aea-RGA_Wy8JApGn"
-);
+  let supabase = null;
+
+if (window.supabase) {
+  supabase = window.supabase.createClient(
+    "https://itfqgvpawnvhuvhplgtv.supabase.co",
+    "sb_publishable_X9p5nBBfiuYHfv1Aea-RGA_Wy8JApGn"
+  );
+} else {
+  console.error("Supabase NOT loaded. Check your script tag.");
+}
   const page = document.body.dataset.page || '';
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -179,6 +185,11 @@
   const normalizeGameLogs = (logs) => (Array.isArray(logs) ? sortLogsDesc(logs.map(normalizeGameLog)) : []);
 
   const loadGameLogs = async () => {
+  if (!supabase) {
+    console.warn("Supabase not loaded — running in offline mode");
+    return [];
+  }
+
   try {
     const { data: logs } = await supabase.from("game_logs").select("*");
     const { data: stats } = await supabase.from("player_stats").select("*");
@@ -1374,26 +1385,28 @@
   };
 
   const upsertGameLog = async (log) => {
+  if (!supabase) {
+    setFormStatus("Database not connected.", "error");
+    return;
+  }
+
   try {
     const { data: savedLog, error: logError } = await supabase
       .from("game_logs")
-     .upsert({
-  id: log.id, // <-- ADD THIS BACK
-  date: log.date,
-  title: log.title,
-  format: log.format,
-  location: log.location,
-  team_a: log.teamA,
-  team_b: log.teamB,
-  score_a: log.scoreA,
-  score_b: log.scoreB,
-  notes: log.notes
-})
+      .upsert({
+        id: log.id,
+        date: log.date,
+        title: log.title,
+        format: log.format,
+        location: log.location,
+        team_a: log.teamA,
+        team_b: log.teamB,
+        score_a: log.scoreA,
+        score_b: log.scoreB,
+        notes: log.notes
+      })
       .select()
       .single();
-
-console.log("SAVED LOG:", savedLog);
-console.log("ERROR:", logError);
 
     if (logError) throw logError;
 
