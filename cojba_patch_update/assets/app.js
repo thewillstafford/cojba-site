@@ -1393,6 +1393,9 @@
       .select()
       .single();
 
+console.log("SAVED LOG:", savedLog);
+console.log("ERROR:", logError);
+
     if (logError) throw logError;
 
     await supabase
