@@ -1660,11 +1660,17 @@ console.log("ERROR:", logError);
     form.dataset.wired = 'true';
 
     form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const log = collectGameLogFromForm();
-      if (!log) return;
-      upsertGameLog(log);
-    });
+  event.preventDefault();
+
+  console.log("FORM SUBMITTED"); // 👈 ADD THIS
+
+  const log = collectGameLogFromForm();
+  console.log("COLLECTED LOG:", log); // 👈 ADD THIS
+
+  if (!log) return;
+
+  upsertGameLog(log);
+});
 
     const resetFormButton = $('#reset-log-form');
     if (resetFormButton) {
