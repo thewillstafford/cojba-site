@@ -199,15 +199,15 @@
         .map(s => ({
           playerId: s.player_id,
           played: s.played,
-          pts: safeNumber(s.pts),
-          reb: safeNumber(s.reb),
-          ast: safeNumber(s.ast),
-          stl: safeNumber(s.stl),
-          blk: safeNumber(s.blk),
-          fgm: safeNumber(s.fgm),
-          fga: safeNumber(s.fga),
-          tpm: safeNumber(s.tpm),
-          tpa: safeNumber(s.tpa)
+          pts: s.pts,
+          reb: s.reb,
+          ast: s.ast,
+          stl: s.stl,
+          blk: s.blk,
+          fgm: s.fgm,
+          fga: s.fga,
+          tpm: s.tpm,
+          tpa: s.tpa
         }))
     }));
 
@@ -216,9 +216,8 @@
 
   } catch (err) {
     console.warn("Supabase load failed:", err);
+    return [];
   }
-
-  return [];
 };
 
   const persistGameLogs = (logs) => {
