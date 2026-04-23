@@ -1760,4 +1760,4 @@ rerenderWithCurrentState();
   if (page === 'stats') renderStats();
   if (page === 'videos') renderVideos();
   if (page === 'game-logs') renderGameLogsPage();
-});
+})();
